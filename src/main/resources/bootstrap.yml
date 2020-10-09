@@ -1,3 +1,5 @@
+#Adding a comment
+
 spring:
   application:
     name: spring-boot-app
