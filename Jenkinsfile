@@ -18,7 +18,7 @@ node{
     }
     
     stage('Docker Build Image and Push to Nexus'){
-        docker build -t 35.154.42.145:8081/spring-boot-mongo:${BUILD_NUMBER} .
+        "docker build -t 35.154.42.145:8081/spring-boot-mongo:${BUILD_NUMBER} ."
         withCredentials([string(credentialsId: 'nexus_dockerrepo_pwd', variable: 'nexus_dockerrepo_pwd')]) {
             sh "docker login -u sayali -p ${nexus_dockerrepo_pwd} http://35.154.42.145:8081/repository/spring-boot-mongo/"    
         }
