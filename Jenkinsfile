@@ -18,22 +18,22 @@ node{
     }
     
     stage('Docker Build Image and Push to Nexus'){
-        sh "docker build -t 35.154.42.145:8081/spring-boot-mongo:${BUILD_NUMBER} ."
+        sh "docker build -t 35.154.42.145:10001/spring-boot-mongo:${BUILD_NUMBER} ."
         withCredentials([string(credentialsId: 'nexus_dockerrepo_pwd', variable: 'nexus_dockerrepo_pwd')]) {
-            sh "docker login -u sayali --password-stdin ${nexus_dockerrepo_pwd} 35.154.42.145:8081"    
+            sh "docker login -u sayali --password-stdin ${nexus_dockerrepo_pwd} 35.154.42.145:10001"    
         }
-		sh "docker push 35.154.42.145:8081/spring-boot-mongo:${BUILD_NUMBER}"
+		sh "docker push 35.154.42.145:10001/spring-boot-mongo:${BUILD_NUMBER}"
     }
 	
 	stage('Remove local Image from Jenkins Server'){
-		sh "docker rmi -f 35.154.42.145:8081/spring-boot-mongo:${BUILD_NUMBER}"
+		sh "docker rmi -f 35.154.42.145:10001/spring-boot-mongo:${BUILD_NUMBER}"
 	}
 	
 	stage('Deploy to Docker Swarm Cluster'){
 	sshagent(['swarm_ssh_pwd']) {
 		withCredentials([string(credentialsId: 'nexus_dockerrepo_pwd', variable: 'nexus_dockerrepo_pwd')]) {
                         sh "scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@15.206.203.210"
-			sh "ssh -o StrictHostKeyChecking=no ubuntu@15.206.203.210 docker login -u sayali -p ${nexus_dockerrepo_pwd} http://35.154.42.145:8081/repository/spring-boot-mongo/"
+			sh "ssh -o StrictHostKeyChecking=no ubuntu@15.206.203.210 docker login -u sayali -p ${nexus_dockerrepo_pwd} http://35.154.42.145:10001/repository/spring-boot-mongo/"
 			sh "ssh -o StrictHostKeyChecking=no ubuntu@15.206.203.210 buildNo=${BUILD_NUMBER} docker stack deploy --prune --compose-file docker-compose.yml springboot ${buildNo} --with-registry-auth"
     }
 	}
