@@ -18,11 +18,11 @@ node{
     }
     
     stage('Docker Build Image and Push to Nexus'){
-        sh "docker build -t 35.154.42.145:8081/spring-boot-mongo:${BUILD_NUMBER} ."
+        sh "docker build -t 35.154.42.145:10001/spring-boot-mongo:${BUILD_NUMBER} ."
         withCredentials([string(credentialsId: 'nexus_dockerrepo_pwd', variable: 'nexus_dockerrepo_pwd')]) {
-            sh "docker login -u sayali -p ${nexus_dockerrepo_pwd} 35.154.42.145:8081"    
+            sh "docker login -u sayali -p ${nexus_dockerrepo_pwd} 35.154.42.145:10001"    
         }
-		sh "docker push 35.154.42.145:8081/spring-boot-mongo:${BUILD_NUMBER}"
+		sh "docker push 35.154.42.145:10001/spring-boot-mongo:${BUILD_NUMBER}"
     }
 	
 	stage('Remove local Image from Jenkins Server'){
