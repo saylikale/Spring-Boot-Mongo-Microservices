@@ -4,7 +4,7 @@ services:
   springapp:
     image: 35.154.42.145:8081/spring-boot-mongo:${buildNo}
     ports:
-    - 8080:8080
+    - 8082:8080
     - 50000:50000
     environment:
     - MONGO_DB_HOSTNAME=mongo
