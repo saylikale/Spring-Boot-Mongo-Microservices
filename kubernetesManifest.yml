@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: springapp_deploy
+  name: springapp-deploy
 spec:
   replicas: 2
   selector:
@@ -11,12 +11,12 @@ spec:
       app: springapp
   template:
     metadata:
-      name: springapp_pod
+      name: springapp-pod
       labels:
         app: springapp
     spec:
       containers:
-      - name: springapp_container
+      - name: springapp-container
         image: saylikale40/spring-boot-mongo
         env:
         - name: MONGO_DB_HOSTNAME
@@ -32,21 +32,21 @@ spec:
 # MongoDB Replication Controller
 
 apiVersion: apps/v1
-kind: ReplicaController
+kind: ReplicationController
 metadata:
-  name: mongo_deploy
+  name: mongo-deploy
 spec:
   replicas: 1
   selector:
     app: mongo
   template:
     metadata:
-      name: mongo_pod
+      name: mongo-pod
       labels:
         app: mongo
     spec:
       containers:
-      - name: mongo_container
+      - name: mongo-container
         image: mongo
         env:
         - name: MONGO_INITDB_ROOT_USERNAME
@@ -62,7 +62,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: springapp_svc
+  name: springapp-svc
 spec:
   type: NodePort
   selector:
@@ -78,7 +78,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo_svc
+  name: mongo-svc
 spec:
   type: ClusterIP
   selector:
