@@ -1,0 +1,38 @@
+node{
+   
+    def mavenHome = tool name: 'maven', type: 'maven'
+    def mavenCMD = "${mavenHome}/bin/mvn"
+    
+    stage('Git Checkout'){
+        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/saylikale/Spring-Boot-Mongo-Microservices.git']]])
+    }
+    
+    stage('Packaging of the code'){
+        sh "${mavenCMD} package"
+    }
+    
+    stage('Docker Build Image and Push to DockerHub'){
+        sh "docker build -t saylikale40/spring-boot-mongo:${BUILD_NUMBER} ."
+        withCredentials([string(credentialsId: 'docker_hub_pwd', variable: 'docker_hub_pwd')]) {
+            sh "docker login -u saylikale40 -p ${docker_hub_pwd}"    
+        }
+		sh "docker push saylikale40/spring-boot-mongo:${BUILD_NUMBER}"
+    }
+ 
+    /* 
+    stage('Deploy to K8s cluster'){
+        sshagent(['SSHTok8s']) {
+        sh "scp -o StrictHostKeyChecking=no kubernetesManifest.yml ubuntu@13.233.96.31"
+        sh "ssh -o StrictHostKeyChecking=no kubectl apply -f kubernetesManifest.yml --kubeconfig=KUBERNETES_CLUSTER_CONFIG"    
+        }
+    }
+    */
+    
+    stage('Deploy to K8s Master'){
+        kubernetesDeploy(
+        configs: "kubernetesManifest.yml",
+        kubeconfigId: "KUBERNETES_CLUSTER_CONFIG",
+        enableConfigSubstitution: true
+        )
+    }
+}
