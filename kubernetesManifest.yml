@@ -20,7 +20,7 @@ spec:
         image: saylikale40/spring-boot-mongo
         env:
         - name: MONGO_DB_HOSTNAME
-          value: mongo
+          value: mongo-svc
         - name: MONGO_DB_USERNAME
           value: devdb
         - name: MONGO_DB_PASSWORD
@@ -31,7 +31,7 @@ spec:
 
 # MongoDB Replication Controller
 
-apiVersion: apps/v1
+apiVersion: v1
 kind: ReplicationController
 metadata:
   name: mongo-deploy
@@ -47,7 +47,7 @@ spec:
     spec:
       containers:
       - name: mongo-container
-        image: mongo
+        image: mongo-svc
         env:
         - name: MONGO_INITDB_ROOT_USERNAME
           value: devdb
@@ -70,7 +70,7 @@ spec:
   ports:
   - port: 80
     targetPort: 8080
-    NodePort: 30001
+    nodePort: 30001
 ---
 
 # MongoDB Service (MongoDB Default Port -> 27017)
